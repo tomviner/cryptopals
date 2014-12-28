@@ -27,7 +27,7 @@ def hex_xor(h1, h2):
 
 def test_hex_xor_from_binary():
     """
-    binary xor example:
+    binary XOR example:
     bin(0b1010 ^ 0b0011) == '0b1001'
     (10 ^ 3) == 9
     (0xa ^ 0x3) == 0x9

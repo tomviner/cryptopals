@@ -12,7 +12,7 @@ Cryptopals Rule
 Always operate on raw bytes, never on encoded strings. Only use hex and base64 for pretty-printing.
 """
 
-from base64 import b64encode, b16decode
+from base64 import b16decode, b64encode
 
 
 def decode_hex(input_hex):
