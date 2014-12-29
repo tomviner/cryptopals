@@ -6,11 +6,12 @@ Find it.
 
 (Your code from #3 should help.)
 """
+from __future__ import unicode_literals
 
 from base64 import b16encode
 
-from set1_chal2 import decode_hex, hex_xor
-from set1_chal3 import (select_most_englishest, simple_score,
+from cryptopals.set1_chal2 import decode_hex, hex_xor
+from cryptopals.set1_chal3 import (select_most_englishest, simple_score,
                         single_letter_xor_plaintexts)
 
 
@@ -27,11 +28,11 @@ def decrypt_single_character_xor_from_file(filename='cryptopals/set1_chal4_data.
 
 def test_decrypt_single_character_xor_from_file():
     (hex_string, letter), plaintext = decrypt_single_character_xor_from_file()
-    expected_answer = "Now that the party is jumping\n"
-    expected_single_char = '5'
+    expected_answer = b"Now that the party is jumping\n"
+    expected_single_char = b'5'
     assert plaintext == expected_answer
     assert letter == expected_single_char
-    assert hex_string == '7b5a4215415d544115415d5015455447414c155c46155f4058455c5b523f'
+    assert hex_string == b'7b5a4215415d544115415d5015455447414c155c46155f4058455c5b523f'
 
     expected_answer_hex = b16encode(expected_answer).lower()
     n = len(decode_hex(expected_answer_hex))

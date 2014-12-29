@@ -13,8 +13,9 @@ If your function works properly, then when you feed it the string:
 
 746865206b696420646f6e277420706c6179
 """
+from __future__ import unicode_literals
 
-from set1_chal1 import decode_hex
+from cryptopals.set1_chal1 import decode_hex
 
 
 def hex_xor(h1, h2):
@@ -28,7 +29,7 @@ def hex_xor(h1, h2):
     result_int = i1 ^ i2
     # use format to avoid 0x prefix
     # pad with leading zeros, to match length of input
-    return '{:0{}x}'.format(result_int, n1)
+    return bytes('{:0{}x}'.format(result_int, n1), 'ascii')
 
 
 def test_hex_xor_from_binary():
@@ -50,12 +51,12 @@ def test_hex_xor_easy():
 def test_hex_xor_example():
     # everything is hex here
     # input1 doesn't appear to be an encoded readable string
-    input1 = '1c0111001f010100061a024b53535009181c'
-    input2 = '686974207468652062756c6c277320657965'
-    assert decode_hex(input2) == "hit the bull's eye"
+    input1 = b'1c0111001f010100061a024b53535009181c'
+    input2 = b'686974207468652062756c6c277320657965'
+    assert decode_hex(input2) == b"hit the bull's eye"
     result = hex_xor(input1, input2)
-    expected = '746865206b696420646f6e277420706c6179'
-    assert decode_hex(result) == "the kid don't play"
+    expected = b'746865206b696420646f6e277420706c6179'
+    assert decode_hex(result) == b"the kid don't play"
     assert result == expected
 
 def test_short_output():
