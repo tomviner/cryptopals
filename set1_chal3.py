@@ -26,20 +26,25 @@ from operator import itemgetter
 
 import pytest
 
-from set1_chal2 import decode_hex, hex_xor
+from set1_chal1 import decode_hex
+from set1_chal2 import hex_xor
 
+
+def single_letter_xor_plaintexts(input_hex):
+    n = len(decode_hex(input_hex))
+    hex_encoded_letter_map = {
+        letter: b16encode(n * letter)
+        for letter in string.letters + string.digits
+    }
+    return {
+        decode_hex(hex_xor(input_hex, letter_hex)): letter
+        for letter, letter_hex in hex_encoded_letter_map.items()
+    }
 
 def find_xor_plaintext(input_hex):
-    n = len(decode_hex(input_hex))
-    hex_encoded_letters = [
-        b16encode(n * letter)
-        for letter in string.letters
-    ]
-    plaintext = [
-        decode_hex(hex_xor(input_hex, letter_hex))
-        for letter_hex in hex_encoded_letters
-    ]
-    return select_most_englishest(plaintext)
+    plaintext_letter_map = single_letter_xor_plaintexts(input_hex)
+    best = select_most_englishest(plaintext_letter_map.keys())
+    return plaintext_letter_map[best], best
 
 
 def get_letter_proportion_map():
@@ -58,12 +63,32 @@ def get_letter_proportion_map():
     }
     return proportion_map
 
-def calc_score(text, english_proportion_map=get_letter_proportion_map()):
+def simple_score(text):
+    """ Count number of unique non-letter* characters
+
+        * honorary_letters allow for common punctuation
+
+        This approach is all you need against random bytes.
+    """
+    honorary_letters = " '.,"
+    return len(set(text) - set(string.letters + honorary_letters))
+
+
+def letter_freq_score(text, english_proportion_map=get_letter_proportion_map()):
+    """ Score based on character frequency
+
+        For each letter in `text` + the alphabet, assess how it's number
+        of occurences differs from that of English language.
+
+        This approach may be need when plaintexts are jumbled letter
+        phrases (as opposed to random bytes).
+    """
     n = len(text)
     text = text.upper()
     text = re.sub(r' ', '', text)
     character_domain = set(string.uppercase) | set(text)
     NON_LETTER_SCORE = 1
+    # sum of squares of differences between expected letter counts and actual
     letter_score_map = {
         letter: (
             text.count(letter) -
@@ -73,9 +98,11 @@ def calc_score(text, english_proportion_map=get_letter_proportion_map()):
     }
     return sum(letter_score_map.values())
 
-def select_most_englishest(texts):
+def select_most_englishest(texts, score_func=letter_freq_score):
+    """ Simply pick the text with the lowest score.
+    """
     score_map = {
-        text: calc_score(text) for text in texts
+        text: score_func(text) for text in texts
     }
     best_text, score = min(score_map.items(), key=itemgetter(1))
     return best_text
@@ -92,7 +119,7 @@ def reproducible_randomness():
     random.seed(some_previous_randomness)
 
 
-def test_score_text(reproducible_randomness):
+def test_score_worded_text(reproducible_randomness):
     def random_phrase():
         make_word = lambda: ''.join(
             random.choice(string.lowercase)
@@ -112,11 +139,29 @@ def test_score_text(reproducible_randomness):
     )
     assert select_most_englishest(plaintexts) == real_text
 
+def test_score_random_bytes(reproducible_randomness):
+    def random_bytes():
+        return ''.join(
+            chr(random.randint(0, 255))
+            for _ in xrange(37)
+        )
+    real_text = 'Hello this is honestly some real text'
+    plaintexts = (
+        real_text,
+        random_bytes(),
+        random_bytes(),
+        random_bytes(),
+        random_bytes(),
+    )
+    selected = select_most_englishest(plaintexts, score_func=simple_score)
+    assert selected == real_text
+
 def test_find_plaintext_example():
     input_hex = (
         '1b37373331363f78151b7f2b783431333d7'
         '8397828372d363c78373e783a393b3736')
-    plaintext = find_xor_plaintext(input_hex)
+    letter, plaintext = find_xor_plaintext(input_hex)
+    assert letter == 'X'
     assert plaintext == "Cooking MC's like a pound of bacon"
     n = len(decode_hex(input_hex))
     assert decode_hex(hex_xor(input_hex, b16encode(n * 'X'))) == plaintext
