@@ -1,1 +1,1 @@
-py.test *.py -vs --cov=. --cov-report=term $@
+py.test *.py -vs --doctest-modules $@

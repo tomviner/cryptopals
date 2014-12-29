@@ -18,11 +18,17 @@ from set1_chal1 import decode_hex
 
 
 def hex_xor(h1, h2):
+    n1 = len(h1)
+    n2 = len(h2)
+    # assert this until we need to deal with differing lengths
+    assert n1 == n2
     i1 = int(h1, base=16)
     i2 = int(h2, base=16)
-    # use format to avoid 0x prefix
     # ^ is xor operator
-    return '{:x}'.format(i1 ^ i2)
+    result_int = i1 ^ i2
+    # use format to avoid 0x prefix
+    # pad with leading zeros, to match length of input
+    return '{:0{}x}'.format(result_int, n1)
 
 
 def test_hex_xor_from_binary():
@@ -51,3 +57,23 @@ def test_hex_xor_example():
     expected = '746865206b696420646f6e277420706c6179'
     assert decode_hex(result) == "the kid don't play"
     assert result == expected
+
+def test_short_output():
+    """
+    If the initial bits are the same, the XOR result is shorter
+    >>> bin(0b01110011 ^ 0b01111100)
+    '0b1111'
+
+    >>> '{:X}'.format(0b1111)
+    'F'
+
+    This can break hex decoding:
+    >>> from base64 import b16decode
+    >>> b16decode('F')
+    Traceback (most recent call last):
+    ...
+    TypeError: Odd-length string
+    """
+    result = hex_xor(hex(0b01110011), hex(0b01111100))
+    # no type error
+    decode_hex(result)
