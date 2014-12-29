@@ -1,1 +1,1 @@
-py.test *.py -vs --doctest-modules $@
+py.test -vs $@

@@ -5,8 +5,9 @@ python:
 install:
     - pip install pytest
     - pip install pytest-cov
+    - pip install tox
     - pip install coveralls
 # command to run tests
-script: ./run_tests_with_coverage.sh
+script: tox
 after_success:
   - coveralls

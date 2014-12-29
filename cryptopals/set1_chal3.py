@@ -50,7 +50,7 @@ def find_xor_plaintext(input_hex):
 def get_letter_proportion_map():
     """ From http://norvig.com/mayzner.html
     """
-    with open('ngrams1_any_position.csv') as f:
+    with open('cryptopals/ngrams1_any_position.csv') as f:
         rdr = csv.reader(f)
         rdr.next()  # col heading row
         occurence_map = {

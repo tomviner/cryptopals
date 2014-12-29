@@ -14,7 +14,7 @@ from set1_chal3 import (select_most_englishest, simple_score,
                         single_letter_xor_plaintexts)
 
 
-def decrypt_single_character_xor_from_file(filename='set1_chal4_data.txt'):
+def decrypt_single_character_xor_from_file(filename='cryptopals/set1_chal4_data.txt'):
     encrypted_lines_hex = open(filename).read().splitlines()
     plaintext_map = {
         plaintext: (hex_string, letter)
