@@ -20,11 +20,11 @@ from set1_chal1 import decode_hex
 def hex_xor(h1, h2):
     n1 = len(h1)
     n2 = len(h2)
-    # assert this until we need to deal with differing lengths
+    # no support for differing length inputs at the moment
     assert n1 == n2
     i1 = int(h1, base=16)
     i2 = int(h2, base=16)
-    # ^ is xor operator
+    # ^ is XOR operator
     result_int = i1 ^ i2
     # use format to avoid 0x prefix
     # pad with leading zeros, to match length of input
@@ -58,7 +58,7 @@ def test_hex_xor_example():
     assert decode_hex(result) == "the kid don't play"
     assert result == expected
 
-def test_short_output():
+def test_short_output_padding():
     """
     If the initial bits are the same, the XOR result is shorter
     >>> bin(0b01110011 ^ 0b01111100)

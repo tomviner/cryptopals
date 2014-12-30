@@ -30,15 +30,17 @@ from set1_chal1 import decode_hex
 from set1_chal2 import hex_xor
 
 
-def single_letter_xor_plaintexts(input_hex):
+def single_letter_xor_plaintexts(
+        input_hex,
+        character_domain=string.letters + string.digits):
+    """ return {message plaintext: letter} dict
+    """
     n = len(decode_hex(input_hex))
-    hex_encoded_letter_map = {
-        letter: b16encode(n * letter)
-        for letter in string.letters + string.digits
-    }
     return {
-        decode_hex(hex_xor(input_hex, letter_hex)): letter
-        for letter, letter_hex in hex_encoded_letter_map.items()
+        decode_hex(
+            hex_xor(input_hex, b16encode(n * letter))
+        ): letter
+        for letter in character_domain
     }
 
 def find_xor_plaintext(input_hex):
@@ -48,7 +50,9 @@ def find_xor_plaintext(input_hex):
 
 
 def get_letter_proportion_map():
-    """ From http://norvig.com/mayzner.html
+    """ return {letter: expected occurence proportion} dict
+
+        Data from http://norvig.com/mayzner.html
     """
     with open('cryptopals/ngrams1_any_position.csv') as f:
         rdr = csv.reader(f)
@@ -80,7 +84,7 @@ def letter_freq_score(text, english_proportion_map=get_letter_proportion_map()):
         For each letter in `text` + the alphabet, assess how it's number
         of occurences differs from that of English language.
 
-        This approach may be need when plaintexts are jumbled letter
+        This approach may be needed when plaintexts are jumbled letter
         phrases (as opposed to random bytes).
     """
     n = len(text)
@@ -101,11 +105,7 @@ def letter_freq_score(text, english_proportion_map=get_letter_proportion_map()):
 def select_most_englishest(texts, score_func=letter_freq_score):
     """ Simply pick the text with the lowest score.
     """
-    score_map = {
-        text: score_func(text) for text in texts
-    }
-    best_text, score = min(score_map.items(), key=itemgetter(1))
-    return best_text
+    return min(texts, key=score_func)
 
 
 @pytest.yield_fixture
@@ -116,18 +116,21 @@ def reproducible_randomness():
     some_previous_randomness = random.random()
     random.seed('make things predictable.')
     yield
+    # return unpredictability again
     random.seed(some_previous_randomness)
 
 
 def test_score_worded_text(reproducible_randomness):
-    def random_phrase():
-        make_word = lambda: ''.join(
+    def make_word():
+        return ''.join(
             random.choice(string.lowercase)
             for _ in xrange(int(random.gauss(5, 1))))
+
+    def random_phrase():
         return ' '.join(
             make_word()
-            for _ in xrange(random.randint(5, 15))
-        )
+            for _ in xrange(random.randint(5, 15)))
+
     real_text = 'Hello this is honestly some real text'
     plaintexts = (
         real_text,
@@ -139,16 +142,17 @@ def test_score_worded_text(reproducible_randomness):
     )
     assert select_most_englishest(plaintexts) == real_text
 
+
 def test_score_random_bytes(reproducible_randomness):
     def random_bytes():
         return ''.join(
             chr(random.randint(0, 255))
-            for _ in xrange(37)
-        )
+            for _ in xrange(37))
+
     real_text = 'Hello this is honestly some real text'
     plaintexts = (
         real_text,
-        random_bytes(),
+        random_bytes(),  # i.e. 'l\xa4\\VN\xa3\xba\xd7\xa9\xd2\xce\xf7sU...'
         random_bytes(),
         random_bytes(),
         random_bytes(),
@@ -158,8 +162,8 @@ def test_score_random_bytes(reproducible_randomness):
 
 def test_find_plaintext_example():
     input_hex = (
-        '1b37373331363f78151b7f2b783431333d7'
-        '8397828372d363c78373e783a393b3736')
+        '1b37373331363f78151b7f2b783431333d'
+        '78397828372d363c78373e783a393b3736')
     letter, plaintext = find_xor_plaintext(input_hex)
     assert letter == 'X'
     assert plaintext == "Cooking MC's like a pound of bacon"
