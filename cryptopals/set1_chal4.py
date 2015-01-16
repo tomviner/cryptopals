@@ -10,14 +10,14 @@ Find it.
 from base64 import b16encode
 
 from set1_chal2 import decode_hex, hex_xor
-from set1_chal3 import (select_most_englishest, simple_score,
-                        single_letter_xor_plaintexts)
+from set1_chal3 import (letter_freq_score, select_most_englishest,
+                        simple_score, single_letter_xor_plaintexts)
 
 
-def decrypt_single_character_xor_from_file(filename='cryptopals/set1_chal4_data.txt'):
+def decrypt_single_character_xor(encrypted_hex):
     """ return (hex_string, letter, message plaintext) tuple
     """
-    encrypted_lines_hex = open(filename).read().splitlines()
+    encrypted_lines_hex = encrypted_hex.splitlines()
     plaintext_map = {
         plaintext: (hex_string, letter)
         for hex_string in encrypted_lines_hex
@@ -29,7 +29,9 @@ def decrypt_single_character_xor_from_file(filename='cryptopals/set1_chal4_data.
 
 
 def test_decrypt_single_character_xor_from_file():
-    hex_string, letter, plaintext = decrypt_single_character_xor_from_file()
+    filename = 'cryptopals/set1_chal4_data.txt'
+    encrypted_hex = open(filename).read()
+    hex_string, letter, plaintext = decrypt_single_character_xor(encrypted_hex)
     expected_answer = "Now that the party is jumping\n"
     expected_single_char = '5'
     assert plaintext == expected_answer

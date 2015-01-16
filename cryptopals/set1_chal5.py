@@ -20,11 +20,10 @@ I promise, we aren't wasting your time with this.
 """
 
 from base64 import b16encode
+from itertools import cycle, izip
 from textwrap import dedent
 
 from set1_chal2 import hex_xor
-
-from itertools import cycle, izip
 
 
 def repeating_key_xor(plaintext, key):
@@ -53,7 +52,7 @@ def test_repeating_key_xor_identity():
     int(repeating_key_xor('barbar', 'bar'), 16) == 0
 
 def test_repeating_key_xor_simple():
-    # test
+    # test plaintext='pt' and key='k'
     int_result = int(repeating_key_xor('pt', 'k'), 16)
     expected = (ord('p') ^ ord('k')) * 16**2 + ord('t') ^ ord('k')
     assert int_result == expected

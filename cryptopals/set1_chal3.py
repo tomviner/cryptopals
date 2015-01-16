@@ -32,7 +32,7 @@ from set1_chal2 import hex_xor
 
 def single_letter_xor_plaintexts(
         input_hex,
-        character_domain=string.letters + string.digits):
+        character_domain=string.printable):
     """ return {message plaintext: letter} dict
     """
     n = len(decode_hex(input_hex))
