@@ -120,6 +120,33 @@ def reproducible_randomness():
     random.seed(some_previous_randomness)
 
 
+param_by_score_func = pytest.mark.parametrize(
+    'score_func',
+    (simple_score, letter_freq_score),
+    ids=(simple_score.func_name, letter_freq_score.func_name))
+
+@param_by_score_func
+def test_score_letter_v_letter(score_func):
+    if score_func == simple_score:
+        raise pytest.xfail()
+    assert score_func('aeio') < score_func('zqxj')
+
+@param_by_score_func
+def test_score_letter_v_punctuation(score_func):
+    assert score_func('zqxj') < score_func('!@#$')
+
+@pytest.mark.xfail
+@param_by_score_func
+def test_score_punctuation_v_control(score_func):
+    assert score_func('!@#$') > score_func('\x00\x01\x02\x03')
+
+@pytest.mark.xfail
+def test_score_length_invariant(score_func):
+    if score_func == letter_freq_score:
+        raise pytest.xfail()
+    assert score_func('e') == score_func('eee')
+
+
 def test_score_worded_text(reproducible_randomness):
     def make_word():
         return ''.join(
