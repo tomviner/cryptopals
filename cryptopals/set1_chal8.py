@@ -45,7 +45,7 @@ def test_detect_ecb():
     uniq_blocks_in_detected_line = 14
     assert dict(Counter(num_uniq_blocks)) == {
         uniq_blocks_in_detected_line: 1,
-        blocks_long: len(cipher_lines) - 1
+        blocks_long: len(cipher_lines)-1
     }
     ecb_line, uniq_chunks = detect_ecb(line_to_uniq_chunk_count)
     assert uniq_chunks == uniq_blocks_in_detected_line

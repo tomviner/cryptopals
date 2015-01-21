@@ -71,7 +71,7 @@ def keysize_to_hamming_distance(keysize, text):
         hamming_distance(
             text[keysize*n:keysize*n+keysize], text[keysize*n+keysize:keysize*n+keysize*2]
         ) / keysize
-        for n in range(20)
+        for n in range(10)
     ]
     return sum(block_distances) / len(block_distances)
 
@@ -81,17 +81,27 @@ def best_keysize_via_hamming_distance(bytes_encrypted):
         key=lambda keysize: keysize_to_hamming_distance(keysize, bytes_encrypted)
     )
 
-def zip_by_keysize(s, keysize):
+def skips_by_keysize(s, keysize):
     return [
         s[start::keysize]
         for start in range(keysize)
     ]
 
+def decrypt_repeating_key_xor(bytes_encrypted):
+    best_keysize = best_keysize_via_hamming_distance(bytes_encrypted)
+    skips_blocks = skips_by_keysize(bytes_encrypted, best_keysize)
 
-def test_zip_by_keysize_simple():
+    _, key, _ = map(''.join, zip(*[
+        decrypt_single_character_xor(b16encode(block))
+        for block in skips_blocks
+    ]))
+    return key, decode_hex(repeating_key_xor(bytes_encrypted, key))
+
+
+def test_skips_by_keysize_simple():
     s = '0123456789'
     zipped = ['0369', '147', '258']
-    assert zip_by_keysize(s, 3) == zipped
+    assert skips_by_keysize(s, 3) == zipped
 
 def test_str_to_bin_simple():
     # ord('A') == 65 == 0b1000001
@@ -155,19 +165,15 @@ def test_keysize_to_hamming_distance_example():
     best_keysize = best_keysize_via_hamming_distance(bytes_encrypted)
     assert best_keysize == 29
 
-def test_zip_by_keysize():
+def test_skips_by_keysize():
     b64_encrypted = open('cryptopals/set1_chal6.txt', 'rb').read()
     bytes_encrypted = b64decode(b64_encrypted)
     best_keysize = best_keysize_via_hamming_distance(bytes_encrypted)
-    zipped_blocks = zip_by_keysize(bytes_encrypted, best_keysize)
-    assert len(zipped_blocks) == 29
+    skips_blocks = skips_by_keysize(bytes_encrypted, best_keysize)
+    assert len(skips_blocks) == 29
 
-    _, key, _ = map(''.join, zip(*[
-        decrypt_single_character_xor(b16encode(block))
-        for block in zipped_blocks
-    ]))
+    key, plaintext = decrypt_repeating_key_xor(bytes_encrypted)
     assert key == 'Terminator X: Bring the noise'
-    plaintext = decode_hex(repeating_key_xor(bytes_encrypted, key))
     expected = dedent("""
         I'm back and I'm ringin' the bell
         A rockin' on the mike while the fly girls yell
