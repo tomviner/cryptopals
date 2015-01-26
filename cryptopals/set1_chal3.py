@@ -28,6 +28,7 @@ import pytest
 
 from set1_chal1 import decode_hex
 from set1_chal2 import hex_xor
+from testing_utils import param_by_functions, reproducible_randomness
 
 
 def single_letter_xor_plaintexts(
@@ -77,6 +78,20 @@ def simple_score(text):
     honorary_letters = " '.,"
     return len(set(text) - set(string.letters + honorary_letters))
 
+def ord_average(text):
+    """ Average of the ascii ordinal of each char
+    """
+    ords = [ord(ch) for ch in text]
+    return sum(ords) / len(ords)
+
+def ord_average_score(text):
+    """ Take the average of the ascii ordinal of each char
+        and return the square of the difference to the average
+        of the upper/lowercase letters
+    """
+    letters_av = ord_average(string.letters)
+    text_av = ord_average(text)
+    return (letters_av - text_av) ** 2
 
 def letter_freq_score(text, english_proportion_map=get_letter_proportion_map()):
     """ Score based on character frequency
@@ -107,36 +122,21 @@ def select_most_englishest(texts, score_func=letter_freq_score):
     """
     return min(texts, key=score_func)
 
+scoring_functions = (simple_score, letter_freq_score, ord_average_score)
+param_by_score_functions = param_by_functions('score_func', scoring_functions)
 
-@pytest.yield_fixture
-def reproducible_randomness():
-    """
-    Tests using this fixture will produce consistent random values
-    """
-    some_previous_randomness = random.random()
-    random.seed('make things predictable.')
-    yield
-    # return unpredictability again
-    random.seed(some_previous_randomness)
-
-
-param_by_score_func = pytest.mark.parametrize(
-    'score_func',
-    (simple_score, letter_freq_score),
-    ids=(simple_score.func_name, letter_freq_score.func_name))
-
-@param_by_score_func
+@param_by_score_functions
 def test_score_letter_v_letter(score_func):
     if score_func == simple_score:
         raise pytest.xfail()
     assert score_func('aeio') < score_func('zqxj')
 
-@param_by_score_func
+@param_by_score_functions
 def test_score_letter_v_punctuation(score_func):
     assert score_func('zqxj') < score_func('!@#$')
 
 @pytest.mark.xfail
-@param_by_score_func
+@param_by_score_functions
 def test_score_punctuation_v_control(score_func):
     assert score_func('!@#$') > score_func('\x00\x01\x02\x03')
 
