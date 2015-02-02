@@ -22,7 +22,6 @@ import random
 import re
 import string
 from base64 import b16encode
-from operator import itemgetter
 
 import pytest
 
@@ -140,7 +139,7 @@ def test_score_letter_v_punctuation(score_func):
 def test_score_punctuation_v_control(score_func):
     assert score_func('!@#$') > score_func('\x00\x01\x02\x03')
 
-@pytest.mark.xfail
+@param_by_score_functions
 def test_score_length_invariant(score_func):
     if score_func == letter_freq_score:
         raise pytest.xfail()
@@ -161,9 +160,9 @@ def test_score_worded_text(reproducible_randomness):
     real_text = 'Hello this is honestly some real text'
     plaintexts = (
         real_text,
-        random_phrase(),  # ihqs vrvu izivnu zqsj qfw oiuhot fack qiuwq xlscc
-        random_phrase(),  # odgkyc rfoboode bxlcck eznn nbplf zgbo wmzq xhlmv jvvc tfaa gqzbia cfiwb
-        random_phrase(),  # ybcr dbns tkri kb yrd obovdm jbhc'
+        random_phrase(),
+        random_phrase(),
+        random_phrase(),
         'Mmmmmm mmmmmm mm mmmmm mmm mmmmm mmmmm mmmmmmm mmmm',
         'Zzzzzz zzzzzz zz zzzzz zzz zzzzz zzzzz zzzzzzz zzzz',
     )
