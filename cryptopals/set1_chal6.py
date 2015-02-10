@@ -47,9 +47,9 @@ import re
 from base64 import b16encode, b64decode
 from textwrap import dedent
 
-from set1_chal1 import decode_hex
-from set1_chal4 import decrypt_single_character_xor
-from set1_chal5 import repeating_key_xor
+from .set1_chal1 import decode_hex
+from .set1_chal4 import decrypt_single_character_xor
+from .set1_chal5 import repeating_key_xor
 
 
 def str_to_bin(s):

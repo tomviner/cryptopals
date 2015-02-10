@@ -11,4 +11,5 @@ setup(
         'pytest',
         'pytest-cov',
     ],
+    include_data=True,
 )
