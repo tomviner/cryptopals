@@ -25,9 +25,10 @@ from base64 import b16encode
 
 import pytest
 
+from testing_utils import param_by_functions, reproducible_randomness
+
 from .set1_chal1 import decode_hex
 from .set1_chal2 import hex_xor
-from testing_utils import param_by_functions, reproducible_randomness
 
 
 def single_letter_xor_plaintexts(

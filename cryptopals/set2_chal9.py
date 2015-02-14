@@ -17,9 +17,8 @@ of padding to the end of the block. For instance,
 "YELLOW SUBMARINE\x04\x04\x04\x04"
 """
 
-def pad(plaintext, block_size, pad_char='\x04'):
-    n = block_size % len(plaintext)
-    return '{}{}'.format(plaintext, n*pad_char)
+from aes import pad
+
 
 def test_padding_example():
     plaintext = "YELLOW SUBMARINE"

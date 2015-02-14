@@ -29,7 +29,7 @@ def test_decrypt():
     assert 128 == 8 * AES.block_size  # bits = 8 * bytes
     cipher_b64 = open('cryptopals/set1_chal7.txt', 'rb').read()
     ciphertext = b64decode(cipher_b64)
-    result = decrypt_ecb(password="YELLOW SUBMARINE", ciphertext=ciphertext)
+    result = decrypt_ecb(ciphertext=ciphertext, password="YELLOW SUBMARINE")
     expected = dedent("""
         I'm back and I'm ringin' the bell
         A rockin' on the mike while the fly girls yell
