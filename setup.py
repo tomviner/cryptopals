@@ -10,6 +10,8 @@ setup(
         'tox',
         'pytest',
         'pytest-cov',
+        'pytest-cache',
+        'pytest-runfailed',
     ],
     include_data=True,
 )
