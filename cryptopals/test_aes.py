@@ -4,7 +4,8 @@ from __future__ import unicode_literals
 import pytest
 
 from .aes import (_decrypt_cbc, _encrypt_cbc, decrypt_cbc, decrypt_ecb,
-                  encrypt_cbc, encrypt_ecb, pad)
+                  encrypt_cbc, encrypt_ecb)
+from .utils import pad
 
 
 def test_aes_ecb():
