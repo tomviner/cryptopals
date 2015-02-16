@@ -12,6 +12,7 @@ setup(
         'pytest-cov',
         'pytest-cache',
         'pytest-runfailed',
+        'pytest-mock',
     ],
     include_data=True,
 )

@@ -1,17 +1,25 @@
-import pytest
-
-from .oracle import encryption_oracle, random_bytes
-from .utils import grouper
+from .aes import encrypt_cbc, encrypt_ecb
+from .oracle import detection_oracle, encryption_oracle
+from .testing_utils import reproducible_randomness
+from .utils import random_bytes
 
 
 def test_random_bytes():
     assert len(random_bytes(16)) == 16
 
-@pytest.mark.parametrize('use_ecb', 5 * (True, False))
-def test_encryption_oracle(use_ecb):
-    plaintext = random_bytes(16) * 3
-    ciphertext = encryption_oracle(plaintext, use_ecb)
-    blocks = list(grouper(16, ciphertext))
-    num_uniq_blocks = len(set(blocks))
-    detect_ecb = num_uniq_blocks < len(blocks)
-    assert use_ecb == detect_ecb
+
+def test_oracle(mocker, reproducible_randomness):
+    m_encrypt_ecb = mocker.patch(
+        'cryptopals.oracle.encrypt_ecb', side_effect=encrypt_ecb)
+    m_encrypt_cbc = mocker.patch(
+        'cryptopals.oracle.encrypt_cbc', side_effect=encrypt_cbc)
+    ecb_covered, cbc_covered = False, False
+    # ensure we cover both types of encryption
+    while not ecb_covered or not cbc_covered:
+        ecb_used = detection_oracle(encryption_oracle)
+        assert ecb_used == m_encrypt_ecb.called
+        assert ecb_used != m_encrypt_cbc.called
+        ecb_covered = ecb_covered or m_encrypt_ecb.called
+        cbc_covered = cbc_covered or m_encrypt_cbc.called
+        m_encrypt_ecb.reset_mock()
+        m_encrypt_cbc.reset_mock()
