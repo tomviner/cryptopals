@@ -1,13 +1,10 @@
 # Python Cryptography Toolkit (pycrypto)
-
 from Crypto.Cipher import AES
 
-from .set1_chal1 import decode_hex
-from .utils import grouper, hex_xor, xor
+from .utils import grouper, xor
 
 PAD_CHAR = '\x04'
 IV = '\x00' * AES.block_size
-
 
 
 def encrypt_ecb(plaintext, password):

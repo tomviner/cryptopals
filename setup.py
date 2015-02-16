@@ -1,8 +1,8 @@
-from setuptools import setup
+from setuptools import setup, find_packages
 
 setup(
     name='cryptopals',
-    packages=['cryptopals'],
+    packages=find_packages(),
     install_requires=[
         'pycrypto'
     ],
