@@ -19,7 +19,7 @@ def encryption_oracle(plaintext):
         return encrypt_cbc(final_plaintext, password, iv)
 
 
-def detection_oracle(encryption_func):
+def detect_cipher(encryption_func):
     plaintext = random_bytes(16) * 3
     ciphertext = encryption_func(plaintext)
     blocks = list(grouper(16, ciphertext))

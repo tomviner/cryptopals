@@ -1,5 +1,5 @@
 from .aes import encrypt_cbc, encrypt_ecb
-from .oracle import detection_oracle, encryption_oracle
+from .oracle import detect_cipher, encryption_oracle
 from .testing_utils import reproducible_randomness
 from .utils import random_bytes
 
@@ -16,7 +16,7 @@ def test_oracle(mocker, reproducible_randomness):
     ecb_covered, cbc_covered = False, False
     # ensure we cover both types of encryption
     while not ecb_covered or not cbc_covered:
-        ecb_used = detection_oracle(encryption_oracle)
+        ecb_used = detect_cipher(encryption_oracle)
         assert ecb_used == m_encrypt_ecb.called
         assert ecb_used != m_encrypt_cbc.called
         ecb_covered = ecb_covered or m_encrypt_ecb.called
