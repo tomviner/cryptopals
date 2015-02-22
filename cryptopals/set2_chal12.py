@@ -57,6 +57,7 @@ from base64 import b64decode
 
 from .aes import encrypt_cbc, encrypt_ecb
 from .utils import grouper, pad, random_bytes
+from .oracle import detect_cipher
 
 CONSISTENT_KEY = 'p89Sma0YfaSwfY8y'
 SPECIAL_SUFFIX = dedent("""
@@ -89,14 +90,20 @@ def test_count_repeat_runs():
     assert count_repeat_runs('abbcccabb') == 2
 
 def detect_block_size(encryption_func=encryption_oracle):
-    for n in xrange(3, 700):
-        plaintext = 'A' * n
-        ciphertext = encryption_func(plaintext)
-        for i in xrange(2, 280):
-            blocks = list(grouper(i, ciphertext))
-            num_repeat_runs = count_repeat_runs(blocks)
-            if num_repeat_runs:
-                return i
+    # can detect block sizes half this length and under
+    text_len = 512
+    plaintext = 'A' * text_len
+    ciphertext = encryption_func(plaintext)
+    half_len = len(ciphertext) // 2
+    for i in xrange(2, half_len):
+        blocks = list(grouper(i, ciphertext))
+        num_repeat_runs = count_repeat_runs(blocks)
+        if num_repeat_runs:
+            return i
 
 def test_detect_block_size():
     assert detect_block_size() == 16
+
+def test_detect_cipher():
+    is_ecb = detect_cipher(encryption_oracle)
+    assert is_ecb
