@@ -52,12 +52,17 @@ in security tests about once a year.
 """
 
 import random
-from textwrap import dedent
+import string
 from base64 import b64decode
+from hashlib import sha1
+from itertools import count
+from textwrap import dedent
+
+import pytest
 
 from .aes import encrypt_cbc, encrypt_ecb
-from .utils import grouper, pad, random_bytes
 from .oracle import detect_cipher
+from .utils import grouper, pad
 
 CONSISTENT_KEY = 'p89Sma0YfaSwfY8y'
 SPECIAL_SUFFIX = dedent("""

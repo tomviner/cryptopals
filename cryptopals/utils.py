@@ -4,6 +4,7 @@ from itertools import chain, izip, repeat
 
 from .set1_chal1 import decode_hex
 
+
 PAD_CHAR = '\x04'
 
 

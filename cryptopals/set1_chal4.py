@@ -10,8 +10,11 @@ Find it.
 from base64 import b16encode
 
 from .set1_chal2 import decode_hex, hex_xor
-from .set1_chal3 import (select_most_englishest, simple_score,
-                         single_letter_xor_plaintexts)
+from .set1_chal3 import (
+    select_most_englishest,
+    simple_score,
+    single_letter_xor_plaintexts,
+)
 
 
 def decrypt_single_character_xor(encrypted_hex):

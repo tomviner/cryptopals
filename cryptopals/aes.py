@@ -3,6 +3,7 @@ from Crypto.Cipher import AES
 
 from .utils import grouper, xor
 
+
 PAD_CHAR = '\x04'
 IV = '\x00' * AES.block_size
 

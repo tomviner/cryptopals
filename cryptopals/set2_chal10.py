@@ -29,6 +29,7 @@ from base64 import b64decode
 
 from .aes import decrypt_cbc
 
+
 expected = """
 I'm back and I'm ringin' the bell
 A rockin' on the mike while the fly girls yell
