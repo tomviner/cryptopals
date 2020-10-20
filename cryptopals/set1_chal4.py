@@ -18,8 +18,7 @@ from .set1_chal3 import (
 
 
 def decrypt_single_character_xor(encrypted_hex):
-    """ return (hex_string, letter, message plaintext) tuple
-    """
+    """return (hex_string, letter, message plaintext) tuple"""
     encrypted_lines_hex = encrypted_hex.splitlines()
     plaintext_map = {
         plaintext: (hex_string, letter)
@@ -28,15 +27,15 @@ def decrypt_single_character_xor(encrypted_hex):
     }
     plaintext = select_most_englishest(plaintext_map.keys(), score_func=simple_score)
     hex_string, letter = plaintext_map[plaintext]
-    return hex_string, letter, plaintext
+    return hex_string, letter.encode(), plaintext
 
 
 def test_decrypt_single_character_xor_from_file():
     filename = 'cryptopals/set1_chal4_data.txt'
     encrypted_hex = open(filename).read()
     hex_string, letter, plaintext = decrypt_single_character_xor(encrypted_hex)
-    expected_answer = "Now that the party is jumping\n"
-    expected_single_char = '5'
+    expected_answer = b"Now that the party is jumping\n"
+    expected_single_char = b'5'
     assert plaintext == expected_answer
     assert letter == expected_single_char
     assert hex_string == '7b5a4215415d544115415d5015455447414c155c46155f4058455c5b523f'
