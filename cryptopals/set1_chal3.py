@@ -56,7 +56,7 @@ def get_letter_proportion_map():
     """
     with open('cryptopals/ngrams1_any_position.csv') as f:
         rdr = csv.reader(f)
-        rdr.next()  # col heading row
+        next(rdr)  # col heading row
         occurence_map = {
             letter: int(count) for letter, count in rdr
         }

@@ -44,5 +44,5 @@ def grouper(n, iterable, padvalue=PAD_CHAR):
 
 def random_bytes(n, upto=2**8):
     return ''.join(
-        unichr(random.choice(xrange(upto)))
-        for _ in xrange(n)).encode('utf-8')[:n]
+        chr(random.choice(range(upto)))
+        for _ in range(n)).encode('utf-8')[:n]

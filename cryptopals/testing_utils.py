@@ -18,4 +18,4 @@ def param_by_functions(arg_name, functions):
     return pytest.mark.parametrize(
         arg_name,
         functions,
-        ids=[func.func_name for func in functions])
+        ids=[func.__name__ for func in functions])
