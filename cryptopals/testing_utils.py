@@ -14,8 +14,18 @@ def reproducible_randomness():
     # return unpredictability again
     random.seed(some_previous_randomness)
 
-def param_by_functions(arg_name, functions):
+
+def param_by_functions(arg_name, functions, xfails=()):
     return pytest.mark.parametrize(
         arg_name,
-        functions,
-        ids=[func.__name__ for func in functions])
+        [
+            pytest.param(
+                func,
+                id=func.__name__,
+                marks=pytest.mark.xfail(
+                    condition=func in xfails, reason='xfail', strict=True
+                ),
+            )
+            for func in functions
+        ],
+    )

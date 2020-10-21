@@ -123,31 +123,34 @@ def select_most_englishest(texts, score_func=letter_freq_score):
 
 
 scoring_functions = (simple_score, letter_freq_score, ord_average_score)
-param_by_score_functions = param_by_functions('score_func', scoring_functions)
 
 
-@param_by_score_functions
+def param_by_score_functions(xfails=()):
+    return param_by_functions('score_func', scoring_functions, xfails)
+
+
+@param_by_functions('score_func', [simple_score])
+def test_score_letter_v_letter_equal(score_func):
+    assert score_func(b'aeio') == score_func(b'zqxj')
+
+
+@param_by_functions('score_func', [letter_freq_score, ord_average_score])
 def test_score_letter_v_letter(score_func):
-    if score_func == simple_score:
-        raise pytest.xfail()
     assert score_func(b'aeio') < score_func(b'zqxj')
 
 
-@param_by_score_functions
+@param_by_score_functions()
 def test_score_letter_v_punctuation(score_func):
     assert score_func(b'zqxj') < score_func(b'!@#$')
 
 
-@pytest.mark.xfail
-@param_by_score_functions
+@param_by_score_functions()
 def test_score_punctuation_v_control(score_func):
-    assert score_func(b'!@#$') > score_func(b'\x00\x01\x02\x03')
+    assert score_func(b'!@#$') < score_func(b'\x00\x01\x02\x03') + 1e-6
 
 
-@param_by_score_functions
+@param_by_score_functions(xfails=[letter_freq_score])
 def test_score_length_invariant(score_func):
-    if score_func == letter_freq_score:
-        raise pytest.xfail()
     assert score_func(b'e') == score_func(b'eee')
 
 

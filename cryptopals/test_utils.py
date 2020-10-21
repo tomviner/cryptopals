@@ -11,12 +11,14 @@ def test_hex_xor_from_binary():
     """
     assert hex_xor('a', '3') == '9'
 
+
 def test_hex_xor_easy():
     # everything here is hex
     # last digits from example below
     result = hex_xor('c', '5')
     expected = '9'
     assert result == expected
+
 
 def test_short_output_padding():
     """
