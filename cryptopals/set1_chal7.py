@@ -30,7 +30,8 @@ def test_decrypt():
     cipher_b64 = open('cryptopals/set1_chal7.txt', 'rb').read()
     ciphertext = b64decode(cipher_b64)
     result = decrypt_ecb(ciphertext=ciphertext, password="YELLOW SUBMARINE")
-    expected = dedent("""
+    expected = dedent(
+        """
         I'm back and I'm ringin' the bell
         A rockin' on the mike while the fly girls yell
         In ecstasy in the back of me
@@ -110,7 +111,8 @@ def test_decrypt():
         Play that funky music A little louder now
         Play that funky music, white boy Come on, Come on, Come on
         Play that funky music
-        \x04\x04\x04\x04""")
+        \x04\x04\x04\x04"""
+    )
     # my editor kills spaces at end of line, so put them back
-    expected = re.sub(r'(\n+)', r' \1', expected).lstrip()
+    expected = re.sub(r'(\n+)', r' \1', expected).lstrip().encode()
     assert result == expected
