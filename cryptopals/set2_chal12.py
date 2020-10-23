@@ -51,26 +51,24 @@ experience is any guideline, this attack will get you code execution
 in security tests about once a year.
 """
 
-import random
-import string
 from base64 import b64decode
-from hashlib import sha1
-from itertools import count
 from textwrap import dedent
 
-import pytest
-
-from .aes import encrypt_cbc, encrypt_ecb
+from .aes import encrypt_ecb
 from .oracle import detect_cipher
 from .utils import grouper, pad
 
+
 CONSISTENT_KEY = 'p89Sma0YfaSwfY8y'
-SPECIAL_SUFFIX = dedent("""
+SPECIAL_SUFFIX = dedent(
+    """
     Um9sbGluJyBpbiBteSA1LjAKV2l0aCBteSByYWctdG9wIGRvd24gc28gbXkg
     aGFpciBjYW4gYmxvdwpUaGUgZ2lybGllcyBvbiBzdGFuZGJ5IHdhdmluZyBq
     dXN0IHRvIHNheSBoaQpEaWQgeW91IHN0b3A/IE5vLCBJIGp1c3QgZHJvdmUg
     YnkK
-""")
+"""
+)
+
 
 def encryption_oracle(plaintext, password=CONSISTENT_KEY):
     suffex = b64decode(SPECIAL_SUFFIX)
@@ -89,10 +87,12 @@ def count_repeat_runs(blocks):
         last = block
     return max(runs)
 
+
 def test_count_repeat_runs():
     assert count_repeat_runs('abcabc') == 0
     assert count_repeat_runs('abccabc') == 1
     assert count_repeat_runs('abbcccabb') == 2
+
 
 def detect_block_size(encryption_func=encryption_oracle):
     # can detect block sizes half this length and under
@@ -106,8 +106,10 @@ def detect_block_size(encryption_func=encryption_oracle):
         if num_repeat_runs:
             return i
 
+
 def test_detect_block_size():
     assert detect_block_size() == 16
+
 
 def test_detect_cipher():
     is_ecb = detect_cipher(encryption_oracle)

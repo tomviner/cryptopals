@@ -114,6 +114,7 @@ Play that funky music
 # my editor kills spaces at end of line, so put them back
 expected = re.sub(r'(\n+)', r' \1', expected).lstrip()
 
+
 def test_example():
     crypt = open('cryptopals/set2_chal10.txt').read()
     crypt = b64decode(crypt)

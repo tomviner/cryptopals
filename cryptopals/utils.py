@@ -1,6 +1,6 @@
 import random
 from base64 import b16encode
-from itertools import chain, izip, repeat
+from itertools import chain, repeat
 
 from .set1_chal1 import decode_hex
 
@@ -33,16 +33,16 @@ def xor(bs1, bs2):
 
 def pad(plaintext, block_size, pad_char=PAD_CHAR):
     n = block_size - (len(plaintext) % block_size)
-    return '{}{}'.format(plaintext, n*pad_char)
+    return '{}{}'.format(plaintext, n * pad_char)
 
 
 def grouper(n, iterable, padvalue=PAD_CHAR):
     "grouper(3, 'abcdefg', 'x') --> ('a','b','c'), ('d','e','f'), ('g','x','x')"
-    groups = izip(*[chain(iterable, repeat(padvalue, n-1))]*n)
+    groups = zip(*[chain(iterable, repeat(padvalue, n - 1))] * n)
     return (''.join(group) for group in groups)
 
 
-def random_bytes(n, upto=2**8):
-    return ''.join(
-        chr(random.choice(range(upto)))
-        for _ in range(n)).encode('utf-8')[:n]
+def random_bytes(n, upto=2 ** 8):
+    return ''.join(chr(random.choice(range(upto))) for _ in range(n)).encode('utf-8')[
+        :n
+    ]

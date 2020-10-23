@@ -12,6 +12,7 @@ def encrypt_ecb(plaintext, password):
     crypter = AES.new(password, AES.MODE_ECB)
     return crypter.encrypt(plaintext)
 
+
 def decrypt_ecb(ciphertext, password):
     crypter = AES.new(password, AES.MODE_ECB)
     return crypter.decrypt(ciphertext)
@@ -22,14 +23,13 @@ def _encrypt_cbc(plaintext, password):
     crypter = AES.new(password, AES.MODE_CBC, IV)
     return crypter.encrypt(plaintext)
 
+
 def _decrypt_cbc(ciphertext, password):
     crypter = AES.new(password, AES.MODE_CBC, IV)
     return crypter.decrypt(ciphertext).rstrip(PAD_CHAR)
 
 
-def encrypt_cbc(
-    plaintext, password, iv=IV, block_size=AES.block_size
-):
+def encrypt_cbc(plaintext, password, iv=IV, block_size=AES.block_size):
     # padded_plaintext = pad(plaintext, block_size)
     res = []
     crypt_block = iv
@@ -40,9 +40,7 @@ def encrypt_cbc(
     return ''.join(res)
 
 
-def decrypt_cbc(
-    ciphertext, password, iv=IV, block_size=AES.block_size
-):
+def decrypt_cbc(ciphertext, password, iv=IV, block_size=AES.block_size):
     res = []
     prev_block = iv
     for cipher_block in grouper(block_size, ciphertext):

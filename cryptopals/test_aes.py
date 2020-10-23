@@ -16,7 +16,7 @@ from .utils import pad
 
 def test_aes_ecb():
     # both multiples of 16 bytes
-    plaintext = b'message with data, £ & secrets.'
+    plaintext = 'message with data, £ & secrets.'.encode()
     password = '1234567890123456'
     ciphertext = encrypt_ecb(plaintext, password)
     decrypted = decrypt_ecb(ciphertext, password)
@@ -34,8 +34,8 @@ def test_padding(n):
 
 @pytest.mark.parametrize('n', xrange(20))
 def test_aes_cbc__my_cbc_en(n):
-    orig_plaintext = b'this is my message, cost=£££'
-    plaintext = orig_plaintext[:len(orig_plaintext)-n]
+    orig_plaintext = 'this is my message, cost=£££'.encode()
+    plaintext = orig_plaintext[: len(orig_plaintext) - n]
     password = '1234567890123456'
     plaintext_padded = pad(plaintext, 16)
     assert len(plaintext_padded) % 16 == 0
@@ -43,10 +43,11 @@ def test_aes_cbc__my_cbc_en(n):
     decrypted = _decrypt_cbc(ciphertext, password)
     assert decrypted == plaintext
 
+
 @pytest.mark.parametrize('n', xrange(20))
 def test_aes_cbc__my_cbc_de(n):
-    orig_plaintext = b'this is my message, cost=£££'
-    plaintext = orig_plaintext[:len(orig_plaintext)-n]
+    orig_plaintext = 'this is my message, cost=£££'.encode()
+    plaintext = orig_plaintext[: len(orig_plaintext) - n]
     password = '1234567890123456'
     plaintext_padded = pad(plaintext, 16)
     assert len(plaintext_padded) % 16 == 0
@@ -54,10 +55,11 @@ def test_aes_cbc__my_cbc_de(n):
     decrypted = decrypt_cbc(ciphertext, password)
     assert decrypted == plaintext
 
+
 @pytest.mark.parametrize('n', xrange(20))
 def test_aes_cbc(n):
-    orig_plaintext = b'this is my message, cost=£££'
-    plaintext = orig_plaintext[:len(orig_plaintext)-n]
+    orig_plaintext = 'this is my message, cost=£££'.encode()
+    plaintext = orig_plaintext[: len(orig_plaintext) - n]
     password = '1234567890123456'
     plaintext_padded = pad(plaintext, 16)
     assert len(plaintext_padded) % 16 == 0

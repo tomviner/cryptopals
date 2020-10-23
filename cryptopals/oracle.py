@@ -8,8 +8,7 @@ def encryption_oracle(plaintext):
     password = random_bytes(16)
     n1 = random.randint(5, 10)
     n2 = random.randint(5, 10)
-    buffered = '{}{}{}'.format(
-        random_bytes(n1), plaintext, random_bytes(n2))
+    buffered = '{}{}{}'.format(random_bytes(n1), plaintext, random_bytes(n2))
     final_plaintext = pad(buffered, 16)
     use_ecb = bool(random.randint(0, 1))
     if use_ecb:

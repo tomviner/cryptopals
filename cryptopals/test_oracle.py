@@ -1,6 +1,5 @@
 from .aes import encrypt_cbc, encrypt_ecb
 from .oracle import detect_cipher, encryption_oracle
-from .testing_utils import reproducible_randomness
 from .utils import random_bytes
 
 
@@ -10,9 +9,11 @@ def test_random_bytes():
 
 def test_oracle(mocker, reproducible_randomness):
     m_encrypt_ecb = mocker.patch(
-        'cryptopals.oracle.encrypt_ecb', side_effect=encrypt_ecb)
+        'cryptopals.oracle.encrypt_ecb', side_effect=encrypt_ecb
+    )
     m_encrypt_cbc = mocker.patch(
-        'cryptopals.oracle.encrypt_cbc', side_effect=encrypt_cbc)
+        'cryptopals.oracle.encrypt_cbc', side_effect=encrypt_cbc
+    )
     ecb_covered, cbc_covered = False, False
     # ensure we cover both types of encryption
     while not ecb_covered or not cbc_covered:

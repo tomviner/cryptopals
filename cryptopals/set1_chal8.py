@@ -12,21 +12,19 @@ the same 16 byte plaintext block will always produce the same 16 byte ciphertext
 
 import re
 from collections import Counter
-from itertools import izip_longest
+from itertools import zip_longest
 from textwrap import dedent
 
 
 # From http://stackoverflow.com/a/312644/15890
 def grouper(n, iterable, padvalue=None):
     "grouper(3, 'abcdefg', 'x') --> ('a','b','c'), ('d','e','f'), ('g','x','x')"
-    return izip_longest(*[iter(iterable)]*n, fillvalue=padvalue)
+    return zip_longest(*[iter(iterable)] * n, fillvalue=padvalue)
 
 
 def get_uniq_block_counts(cipher_lines):
-    return {
-        line: len(set(map(''.join, grouper(16, line))))
-        for line in cipher_lines
-    }
+    return {line: len(set(map(''.join, grouper(16, line)))) for line in cipher_lines}
+
 
 def detect_ecb(line_to_uniq_chunks):
     ecb_line = min(line_to_uniq_chunks, key=line_to_uniq_chunks.get)
@@ -47,7 +45,7 @@ def test_detect_ecb():
     num_uniq_blocks_in_detected_line = 14
     assert dict(Counter(num_uniq_blocks)) == {
         num_uniq_blocks_in_detected_line: 1,
-        blocks_long: len(cipher_lines)-1
+        blocks_long: len(cipher_lines) - 1,
     }
     ecb_line, num_uniq_chunks = detect_ecb(line_to_uniq_chunk_count)
     assert num_uniq_chunks == num_uniq_blocks_in_detected_line
@@ -57,7 +55,8 @@ def test_detect_ecb():
         '2f6b641dbf9d11b0348542bb5708649af70dc06f4fd5d2d69c744cd2839475c9dfdbc1'
         'd46597949d9c7e82bf5a08649af70dc06f4fd5d2d69c744cd28397a93eab8d6aecd566'
         '489154789a6b0308649af70dc06f4fd5d2d69c744cd283d403180c98c8f6db1f2a3f9c'
-        '4040deb0ab51b29933f2c123c58386b06fba186a')
+        '4040deb0ab51b29933f2c123c58386b06fba186a'
+    )
 
     repeat_regex = r"""
         (.{16})(.{16})(.{16})(.{16})
@@ -69,12 +68,18 @@ def test_detect_ecb():
 
     assert re.match(repeat_regex, ecb_line, re.VERBOSE)
 
-    example_pattern = dedent("""
+    example_pattern = (
+        dedent(
+            """
         <-- Block: a --><-- Block: b --><-- Block: c --><-- Block: d -->
         <-- Block: e --><-- Block: f --><-- Block: c --><-- Block: d -->
         <-- Block: g --><-- Block: h --><-- Block: c --><-- Block: d -->
         <-- Block: i --><-- Block: j --><-- Block: c --><-- Block: d -->
         <-- Block: k --><-- Block: l --><-- Block: m --><-- Block: n -->
-    """).strip().replace('\n', '')
+    """
+        )
+        .strip()
+        .replace('\n', '')
+    )
 
     assert re.match(repeat_regex, example_pattern, re.VERBOSE)
