@@ -22,7 +22,6 @@ import random
 import string
 from base64 import b16encode
 
-import pytest
 
 from .set1_chal1 import decode_hex
 from .set1_chal2 import hex_xor
