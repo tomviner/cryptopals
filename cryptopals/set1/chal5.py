@@ -24,7 +24,7 @@ from base64 import b16encode
 from itertools import cycle
 from textwrap import dedent
 
-from .set1_chal2 import hex_xor
+from .chal2 import hex_xor
 
 
 def repeating_key_xor(plaintext, key):

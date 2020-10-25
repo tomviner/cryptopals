@@ -14,8 +14,8 @@ If your function works properly, then when you feed it the string:
 746865206b696420646f6e277420706c6179
 """
 
-from .set1_chal1 import decode_hex
-from .utils import hex_xor
+from .chal1 import decode_hex
+from ..utils import hex_xor
 
 
 def test_hex_xor_example():

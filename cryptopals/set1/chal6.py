@@ -57,9 +57,9 @@ import re
 from base64 import b16encode, b64decode
 from textwrap import dedent
 
-from .set1_chal1 import decode_hex
-from .set1_chal4 import decrypt_single_character_xor
-from .set1_chal5 import repeating_key_xor
+from .chal1 import decode_hex
+from .chal4 import decrypt_single_character_xor
+from .chal5 import repeating_key_xor
 
 
 def str_to_bin(s):
@@ -179,14 +179,14 @@ def test_keysize_to_hamming_distance_example():
     xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx 39 3.24717948718
     xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx 40 3.1455
     """
-    b64_encrypted = open('cryptopals/set1_chal6.txt', 'rb').read()
+    b64_encrypted = open('cryptopals/set1/chal6.txt', 'rb').read()
     bytes_encrypted = b64decode(b64_encrypted)
     best_keysize = best_keysize_via_hamming_distance(bytes_encrypted)
     assert best_keysize == 29
 
 
 def test_skips_by_keysize():
-    b64_encrypted = open('cryptopals/set1_chal6.txt', 'rb').read()
+    b64_encrypted = open('cryptopals/set1/chal6.txt', 'rb').read()
     bytes_encrypted = b64decode(b64_encrypted)
     best_keysize = best_keysize_via_hamming_distance(bytes_encrypted)
     skips_blocks = skips_by_keysize(bytes_encrypted, best_keysize)

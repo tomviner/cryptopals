@@ -54,9 +54,9 @@ in security tests about once a year.
 from base64 import b64decode
 from textwrap import dedent
 
-from .aes import encrypt_ecb
-from .oracle import detect_cipher
-from .utils import grouper, pad
+from ..aes import encrypt_ecb
+from ..oracle import detect_cipher
+from ..utils import grouper, pad
 
 
 CONSISTENT_KEY = b'p89Sma0YfaSwfY8y'

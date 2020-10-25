@@ -9,8 +9,8 @@ Find it.
 
 from base64 import b16encode
 
-from .set1_chal2 import decode_hex, hex_xor
-from .set1_chal3 import (
+from .chal2 import decode_hex, hex_xor
+from .chal3 import (
     select_most_englishest,
     simple_score,
     single_letter_xor_plaintexts,
@@ -31,7 +31,7 @@ def decrypt_single_character_xor(encrypted_hex):
 
 
 def test_decrypt_single_character_xor_from_file():
-    filename = 'cryptopals/set1_chal4_data.txt'
+    filename = 'cryptopals/set1/chal4_data.txt'
     encrypted_hex = open(filename).read()
     hex_string, letter, plaintext = decrypt_single_character_xor(encrypted_hex)
     expected_answer = b"Now that the party is jumping\n"

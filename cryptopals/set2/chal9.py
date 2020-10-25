@@ -17,7 +17,7 @@ of padding to the end of the block. For instance,
 "YELLOW SUBMARINE\x04\x04\x04\x04"
 """
 
-from .utils import pad
+from ..utils import pad
 
 
 def test_padding_example():

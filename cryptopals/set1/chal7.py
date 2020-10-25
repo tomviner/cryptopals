@@ -23,13 +23,13 @@ from textwrap import dedent
 
 from Crypto.Cipher import AES
 
-from .aes import decrypt_ecb
+from ..aes import decrypt_ecb
 
 
 def test_decrypt():
     # check we are using 128 bits as instructed
     assert 128 == 8 * AES.block_size  # bits = 8 * bytes
-    cipher_b64 = open('cryptopals/set1_chal7.txt', 'rb').read()
+    cipher_b64 = open('cryptopals/set1/chal7.txt', 'rb').read()
     ciphertext = b64decode(cipher_b64)
     result = decrypt_ecb(ciphertext=ciphertext, password="YELLOW SUBMARINE")
     expected = dedent(

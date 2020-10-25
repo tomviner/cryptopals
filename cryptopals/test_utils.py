@@ -1,4 +1,4 @@
-from .set1_chal1 import decode_hex
+from .set1.chal1 import decode_hex
 from .utils import hex_xor
 
 

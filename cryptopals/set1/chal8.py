@@ -33,7 +33,7 @@ def detect_ecb(line_to_uniq_chunks):
 
 def test_detect_ecb():
     block_len = 16
-    cipher_lines = open('cryptopals/set1_chal8.txt', 'rb').read().splitlines()
+    cipher_lines = open('cryptopals/set1/chal8.txt', 'rb').read().splitlines()
     line_to_uniq_chunk_count = get_uniq_block_counts(cipher_lines)
     num_uniq_blocks = line_to_uniq_chunk_count.values()
     # if each line can fit 20 blocks of 16 bytes, we expect one line

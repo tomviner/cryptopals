@@ -27,7 +27,7 @@ What's the point of even doing this stuff if you aren't going to learn from it?
 import re
 from base64 import b64decode
 
-from .aes import decrypt_cbc
+from ..aes import decrypt_cbc
 
 
 expected = """
@@ -116,6 +116,6 @@ expected = re.sub(r'(\n+)', r' \1', expected).lstrip().encode()
 
 
 def test_example():
-    crypt = open('cryptopals/set2_chal10.txt', 'rb').read()
+    crypt = open('cryptopals/set2/chal10.txt', 'rb').read()
     crypt = b64decode(crypt)
     assert decrypt_cbc(crypt, b'YELLOW SUBMARINE') == expected
