@@ -1,6 +1,10 @@
 from .aes import encrypt_cbc, encrypt_ecb
 from .oracle import detect_cipher, encryption_oracle
+from .testing_utils import reproducible_randomness
 from .utils import random_bytes
+
+
+reproducible_randomness
 
 
 def test_random_bytes():

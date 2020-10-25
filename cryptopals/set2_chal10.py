@@ -112,10 +112,10 @@ Play that funky music, white boy Come on, Come on, Come on
 Play that funky music
 """
 # my editor kills spaces at end of line, so put them back
-expected = re.sub(r'(\n+)', r' \1', expected).lstrip()
+expected = re.sub(r'(\n+)', r' \1', expected).lstrip().encode()
 
 
 def test_example():
-    crypt = open('cryptopals/set2_chal10.txt').read()
+    crypt = open('cryptopals/set2_chal10.txt', 'rb').read()
     crypt = b64decode(crypt)
-    assert decrypt_cbc(crypt, 'YELLOW SUBMARINE') == expected
+    assert decrypt_cbc(crypt, b'YELLOW SUBMARINE') == expected

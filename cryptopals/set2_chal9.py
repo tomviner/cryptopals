@@ -21,6 +21,6 @@ from .utils import pad
 
 
 def test_padding_example():
-    plaintext = "YELLOW SUBMARINE"
-    expected_padded = "YELLOW SUBMARINE\x04\x04\x04\x04"
+    plaintext = b"YELLOW SUBMARINE"
+    expected_padded = b"YELLOW SUBMARINE\x04\x04\x04\x04"
     assert pad(plaintext, 20) == expected_padded

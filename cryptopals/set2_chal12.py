@@ -59,7 +59,7 @@ from .oracle import detect_cipher
 from .utils import grouper, pad
 
 
-CONSISTENT_KEY = 'p89Sma0YfaSwfY8y'
+CONSISTENT_KEY = b'p89Sma0YfaSwfY8y'
 SPECIAL_SUFFIX = dedent(
     """
     Um9sbGluJyBpbiBteSA1LjAKV2l0aCBteSByYWctdG9wIGRvd24gc28gbXkg
@@ -67,12 +67,12 @@ SPECIAL_SUFFIX = dedent(
     dXN0IHRvIHNheSBoaQpEaWQgeW91IHN0b3A/IE5vLCBJIGp1c3QgZHJvdmUg
     YnkK
 """
-)
+).encode()
 
 
 def encryption_oracle(plaintext, password=CONSISTENT_KEY):
     suffex = b64decode(SPECIAL_SUFFIX)
-    plaintext = '{}{}'.format(plaintext, suffex)
+    plaintext = plaintext + suffex
     return encrypt_ecb(pad(plaintext, 16), password)
 
 
@@ -97,10 +97,10 @@ def test_count_repeat_runs():
 def detect_block_size(encryption_func=encryption_oracle):
     # can detect block sizes half this length and under
     text_len = 512
-    plaintext = 'A' * text_len
+    plaintext = b'A' * text_len
     ciphertext = encryption_func(plaintext)
     half_len = len(ciphertext) // 2
-    for i in xrange(2, half_len):
+    for i in range(2, half_len):
         blocks = list(grouper(i, ciphertext))
         num_repeat_runs = count_repeat_runs(blocks)
         if num_repeat_runs:
