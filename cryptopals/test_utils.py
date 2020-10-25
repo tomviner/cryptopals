@@ -34,7 +34,7 @@ def test_short_output_padding():
     >>> b16decode('F')
     Traceback (most recent call last):
     ...
-    TypeError: Odd-length string
+    binascii.Error: Odd-length string
     """
     result = hex_xor(hex(0b01110011), hex(0b01111100))
     # no type error
