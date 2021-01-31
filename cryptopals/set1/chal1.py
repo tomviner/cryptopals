@@ -14,12 +14,9 @@ Always operate on raw bytes, never on encoded strings. Only use hex and base64 f
 pretty-printing.
 """
 
-from base64 import b16decode, b64encode
+from base64 import b64encode
 
-
-def decode_hex(input_hex):
-    'Hex to bytes'
-    return b16decode(input_hex.upper(), casefold=True)
+from ..utils import decode_hex
 
 
 def hex_to_base64(input_hex):

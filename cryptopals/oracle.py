@@ -10,7 +10,7 @@ def encryption_oracle(plaintext):
     n2 = random.randint(5, 10)
     buffered = random_bytes(n1) + plaintext + random_bytes(n2)
     final_plaintext = pad(buffered, 16)
-    use_ecb = bool(random.randint(0, 1))
+    use_ecb = bool(random.choice([False, True]))
     if use_ecb:
         return encrypt_ecb(final_plaintext, password)
     else:
@@ -19,6 +19,7 @@ def encryption_oracle(plaintext):
 
 
 def detect_cipher(encryption_func):
+    "Return True for ECB, False for CBC"
     plaintext = random_bytes(16) * 3
     ciphertext = encryption_func(plaintext)
     blocks = list(grouper(16, ciphertext))

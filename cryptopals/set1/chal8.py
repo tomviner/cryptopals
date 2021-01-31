@@ -13,7 +13,6 @@ the same 16 byte plaintext block will always produce the same 16 byte ciphertext
 import re
 from collections import Counter
 from itertools import zip_longest
-from textwrap import dedent
 
 
 # From http://stackoverflow.com/a/312644/15890
@@ -69,18 +68,11 @@ def test_detect_ecb():
     assert re.match(repeat_regex, ecb_line.decode(), re.VERBOSE)
 
     example_pattern = (
-        dedent(
-            """
-        <-- Block: a --><-- Block: b --><-- Block: c --><-- Block: d -->
-        <-- Block: e --><-- Block: f --><-- Block: c --><-- Block: d -->
-        <-- Block: g --><-- Block: h --><-- Block: c --><-- Block: d -->
-        <-- Block: i --><-- Block: j --><-- Block: c --><-- Block: d -->
-        <-- Block: k --><-- Block: l --><-- Block: m --><-- Block: n -->
-    """
-        )
-        .strip()
-        .replace('\n', '')
-        .encode()
+        b'<-- Block: a --><-- Block: b --><-- Block: c --><-- Block: d -->'
+        b'<-- Block: e --><-- Block: f --><-- Block: c --><-- Block: d -->'
+        b'<-- Block: g --><-- Block: h --><-- Block: c --><-- Block: d -->'
+        b'<-- Block: i --><-- Block: j --><-- Block: c --><-- Block: d -->'
+        b'<-- Block: k --><-- Block: l --><-- Block: m --><-- Block: n -->'
     )
 
     assert re.match(repeat_regex, example_pattern.decode(), re.VERBOSE)

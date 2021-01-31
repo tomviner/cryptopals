@@ -1,14 +1,17 @@
 import random
-from base64 import b16encode
+from base64 import b16decode, b16encode
 from itertools import chain, repeat
-
-from .set1.chal1 import decode_hex
 
 
 PAD_CHAR = b'\x04'
 
 
-def hex_xor(h1, h2):
+def decode_hex(input_hex):
+    'Hex to bytes'
+    return b16decode(input_hex.upper(), casefold=True)
+
+
+def xor_hex(h1, h2):
     n1 = len(h1)
     n2 = len(h2)
     assert n1 == n2
@@ -27,7 +30,7 @@ def xor(bs1, bs2):
     n2 = len(bs2)
     # no support for differing length inputs at the moment
     assert n1 == n2
-    hex_res = hex_xor(b16encode(bs1), b16encode(bs2))
+    hex_res = xor_hex(b16encode(bs1), b16encode(bs2))
     return decode_hex(hex_res)
 
 

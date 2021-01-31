@@ -51,13 +51,11 @@ there aren't any blatant errors in this text. In particular: the "wokka wokka!!!
 distance
 really is 37.
 """
-from __future__ import division
-
 import re
 from base64 import b16encode, b64decode
 from textwrap import dedent
 
-from .chal1 import decode_hex
+from ..utils import decode_hex
 from .chal4 import decrypt_single_character_xor
 from .chal5 import repeating_key_xor
 

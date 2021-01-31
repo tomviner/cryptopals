@@ -22,9 +22,8 @@ import random
 import string
 from base64 import b16encode
 
-from .chal1 import decode_hex
-from .chal2 import hex_xor
 from ..testing_utils import param_by_functions, reproducible_randomness
+from ..utils import decode_hex, xor_hex
 
 
 # prevent 'imported but unused'
@@ -35,7 +34,7 @@ def single_letter_xor_plaintexts(input_hex, character_domain=string.printable):
     """return {message plaintext: letter} dict"""
     n = len(decode_hex(input_hex))
     return {
-        decode_hex(hex_xor(input_hex, b16encode((n * letter).encode()))): letter
+        decode_hex(xor_hex(input_hex, b16encode((n * letter).encode()))): letter
         for letter in character_domain
     }
 
@@ -196,4 +195,4 @@ def test_find_plaintext_example():
     assert letter == 'X'
     assert plaintext == b"Cooking MC's like a pound of bacon"
     n = len(decode_hex(input_hex))
-    assert decode_hex(hex_xor(input_hex, b16encode(n * b'X'))) == plaintext
+    assert decode_hex(xor_hex(input_hex, b16encode(n * b'X'))) == plaintext

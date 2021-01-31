@@ -24,14 +24,14 @@ from base64 import b16encode
 from itertools import cycle
 from textwrap import dedent
 
-from .chal2 import hex_xor
+from ..utils import xor_hex
 
 
 def repeating_key_xor(plaintext, key):
     key_gen = cycle(key)
 
     return ''.join(
-        hex_xor(b16encode(bytes([char])), b16encode(bytes([key_char])))
+        xor_hex(b16encode(bytes([char])), b16encode(bytes([key_char])))
         for char, key_char in zip(plaintext, key_gen)
     ).encode()
 
@@ -40,9 +40,9 @@ def test_repeating_key_xor_example():
     plaintext = (
         dedent(
             """
-        Burning 'em, if you ain't quick and nimble
-        I go crazy when I hear a cymbal
-    """
+            Burning 'em, if you ain't quick and nimble
+            I go crazy when I hear a cymbal
+            """
         )
         .strip()
         .encode()

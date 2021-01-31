@@ -23,3 +23,5 @@ Detect the block cipher mode the function is using each time. You
 should end up with a piece of code that, pointed at a block box
 that might be encrypting ECB or CBC, tells you which one is happening.
 """
+
+# See oracle.py

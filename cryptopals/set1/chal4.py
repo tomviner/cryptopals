@@ -9,12 +9,8 @@ Find it.
 
 from base64 import b16encode
 
-from .chal2 import decode_hex, hex_xor
-from .chal3 import (
-    select_most_englishest,
-    simple_score,
-    single_letter_xor_plaintexts,
-)
+from ..utils import decode_hex, xor_hex
+from .chal3 import select_most_englishest, simple_score, single_letter_xor_plaintexts
 
 
 def decrypt_single_character_xor(encrypted_hex):
@@ -43,5 +39,5 @@ def test_decrypt_single_character_xor_from_file():
     expected_answer_hex = b16encode(expected_answer).lower()
     n = len(decode_hex(expected_answer_hex))
     # check answer, using the fact that if encryp^char=plain then plain^char=encryp
-    encryped_hex = hex_xor(expected_answer_hex, b16encode(n * expected_single_char))
+    encryped_hex = xor_hex(expected_answer_hex, b16encode(n * expected_single_char))
     assert encryped_hex == hex_string
