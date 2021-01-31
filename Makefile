@@ -15,7 +15,7 @@ black:
 	black $(PACKAGE_NAME) *.py $(ARGS)
 
 black-check:
-	$(MAKE) black ARGS='--check --verbose --diff'
+	$(MAKE) black ARGS='--check --diff'
 
 autoflake:
 	autoflake --in-place --remove-all-unused-imports $(PACKAGE_NAME)/*.py $(ARGS)
@@ -26,13 +26,12 @@ lint: flake8 black-check isort-check
 
 
 test:
-	pytest test $(ARGS) \
+	pytest --no-cov $(ARGS) \
 		--disable-warnings
 
 coverage: lint
-	coverage run --source $(PACKAGE_NAME) -m \
-		pytest test $(ARGS)
-	coverage report --show-missing --fail-under 10
+	pytest --cov-fail-under 99 \
+		$(ARGS)
 
 
 docker-compose:
