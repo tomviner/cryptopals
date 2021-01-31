@@ -51,27 +51,26 @@ experience is any guideline, this attack will get you code execution
 in security tests about once a year.
 """
 
+import string
 from base64 import b64decode
 from textwrap import dedent
 
-from ..aes import encrypt_ecb
+from ..aes import encrypt_ecb, PAD_CHAR
 from ..oracle import detect_cipher
 from ..utils import grouper, pad
 
 
 CONSISTENT_KEY = b'p89Sma0YfaSwfY8y'
-SPECIAL_SUFFIX = dedent(
-    """
-    Um9sbGluJyBpbiBteSA1LjAKV2l0aCBteSByYWctdG9wIGRvd24gc28gbXkg
-    aGFpciBjYW4gYmxvdwpUaGUgZ2lybGllcyBvbiBzdGFuZGJ5IHdhdmluZyBq
-    dXN0IHRvIHNheSBoaQpEaWQgeW91IHN0b3A/IE5vLCBJIGp1c3QgZHJvdmUg
-    YnkK
-"""
-).encode()
+UNKNOWN_STRING = (
+    b"Um9sbGluJyBpbiBteSA1LjAKV2l0aCBteSByYWctdG9wIGRvd24gc28gbXkg"
+    b"aGFpciBjYW4gYmxvdwpUaGUgZ2lybGllcyBvbiBzdGFuZGJ5IHdhdmluZyBq"
+    b"dXN0IHRvIHNheSBoaQpEaWQgeW91IHN0b3A/IE5vLCBJIGp1c3QgZHJvdmUg"
+    b"YnkK"
+)
 
 
 def encryption_oracle(plaintext, password=CONSISTENT_KEY):
-    suffex = b64decode(SPECIAL_SUFFIX)
+    suffex = b64decode(UNKNOWN_STRING)
     plaintext = plaintext + suffex
     return encrypt_ecb(pad(plaintext, 16), password)
 
@@ -89,6 +88,7 @@ def count_repeat_runs(blocks):
 
 
 def test_count_repeat_runs():
+    # Don't count the first character in a run
     assert count_repeat_runs('abcabc') == 0
     assert count_repeat_runs('abccabc') == 1
     assert count_repeat_runs('abbcccabb') == 2
@@ -114,3 +114,74 @@ def test_detect_block_size():
 def test_detect_cipher():
     is_ecb = detect_cipher(encryption_oracle)
     assert is_ecb
+
+
+def get_block(data, block_size, block_num):
+    start = block_num * block_size
+    stop = start + block_size
+    return data[start:stop]
+
+ALPHABET = PAD_CHAR.decode() + string.printable
+
+
+def ecb_decrypt_char(block_size, pos, known):
+    '''
+    aaa X=a-z
+    aaa<S=1
+
+    aa 1X
+    aa<1S
+
+    a 12X
+    a<12S
+
+     123X
+    <123S
+
+    aaa1 234 X
+    aaa1 234<S
+
+    aa12 345 X
+    aa12 345<S
+    '''
+    offset = pos % block_size
+    block_num = pos // block_size
+    pad_len = block_size - offset - 1
+
+    base = 'A' * pad_len
+
+    inputs = [base + known + letter for letter in ALPHABET]
+    crypt_lookup = {
+        get_block(encryption_oracle(input.encode()), block_size, block_num): input[-1]
+        for input in inputs
+    }
+
+    crypt = get_block(encryption_oracle(base.encode()), block_size, block_num)
+
+    return crypt_lookup[crypt]
+
+
+def ecb_decrypt():
+    unknowns_len = len(encryption_oracle(b''))
+    block_size = detect_block_size()
+
+    results = ''
+    for pos in range(unknowns_len):
+        next_letter = ecb_decrypt_char(block_size, pos, results)
+        results += next_letter
+    return results.rstrip(PAD_CHAR.decode())
+
+
+def test_ecb_decrypt():
+    assert len(pad(b64decode(UNKNOWN_STRING), 16)) == 144
+    assert len(encryption_oracle(b'')) == 144
+
+    expected_text = dedent(
+        """\
+        Rollin' in my 5.0
+        With my rag-top down so my hair can blow
+        The girlies on standby waving just to say hi
+        Did you stop? No, I just drove by
+        """
+    )
+    assert ecb_decrypt() == expected_text
